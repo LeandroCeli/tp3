@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.tp03_libros.databinding.ActivityDetailBinding;
 
 
 public class DetailActivity extends AppCompatActivity {

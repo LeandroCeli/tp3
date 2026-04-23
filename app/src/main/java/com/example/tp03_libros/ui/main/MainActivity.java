@@ -1,12 +1,14 @@
 package com.example.tp03_libros.ui.main;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.tp03_libros.databinding.ActivityMainBinding;
 import com.example.tp03_libros.model.Libro;
+import com.example.tp03_libros.ui.detail.DetailActivity;
 import com.example.tp03_libros.viewmodel.LibroViewModel;
 
 
@@ -26,18 +28,24 @@ public class MainActivity extends AppCompatActivity {
 
         binding.btnBuscar.setOnClickListener(v -> {
 
-            String texto = binding.etLibro.getText().toString();
+            String texto = binding.etLibro.getText().toString().trim();
+            
+            if (texto.isEmpty()) {
+                Toast.makeText(MainActivity.this, "Por favor ingrese un libro", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             Libro libro = viewModel.buscarLibro(texto);
 
-            Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-
             if (libro != null) {
+                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
                 intent.putExtra("titulo", libro.getTitulo());
                 intent.putExtra("autor", libro.getAutor());
                 intent.putExtra("descripcion", libro.getDescripcion());
+                startActivity(intent);
+            } else {
+                Toast.makeText(MainActivity.this, "Libro no encontrado", Toast.LENGTH_SHORT).show();
             }
-
-            startActivity(intent);
         });
     }
 }

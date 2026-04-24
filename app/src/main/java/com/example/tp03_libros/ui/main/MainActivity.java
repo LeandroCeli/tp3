@@ -26,26 +26,25 @@ public class MainActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(LibroViewModel.class);
 
-        binding.btnBuscar.setOnClickListener(v -> {
-
-            String texto = binding.etLibro.getText().toString().trim();
-            
-            if (texto.isEmpty()) {
-                Toast.makeText(MainActivity.this, "Por favor ingrese un libro", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            Libro libro = viewModel.buscarLibro(texto);
-
+        viewModel.getLibro().observe(this, libro -> {
             if (libro != null) {
                 Intent intent = new Intent(MainActivity.this, DetailActivity.class);
                 intent.putExtra("titulo", libro.getTitulo());
                 intent.putExtra("autor", libro.getAutor());
                 intent.putExtra("descripcion", libro.getDescripcion());
                 startActivity(intent);
-            } else {
-                Toast.makeText(MainActivity.this, "Libro no encontrado", Toast.LENGTH_SHORT).show();
             }
+        });
+
+        viewModel.getError().observe(this, errorMsg -> {
+            if (errorMsg != null) {
+                Toast.makeText(MainActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        binding.btnBuscar.setOnClickListener(v -> {
+            String texto = binding.etLibro.getText().toString().trim();
+            viewModel.buscarLibro(texto);
         });
     }
 }
